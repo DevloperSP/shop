@@ -7,25 +7,48 @@ namespace Microsoft.eShopWeb.Web.HealthChecks;
 public class ApiHealthCheck : IHealthCheck
 {
     private readonly BaseUrlConfiguration _baseUrlConfiguration;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public ApiHealthCheck(IOptions<BaseUrlConfiguration> baseUrlConfiguration)
+    public ApiHealthCheck(
+        IOptions<BaseUrlConfiguration> baseUrlConfiguration,
+        IHttpClientFactory httpClientFactory)
     {
         _baseUrlConfiguration = baseUrlConfiguration.Value;
+        _httpClientFactory = httpClientFactory;
     }
 
     public async Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context,
-        CancellationToken cancellationToken = default(CancellationToken))
+        CancellationToken cancellationToken = default)
     {
-        string myUrl = _baseUrlConfiguration.ApiBase + "catalog-items";
-        var client = new HttpClient();
-        var response = await client.GetAsync(myUrl);
-        var pageContents = await response.Content.ReadAsStringAsync();
-        if (pageContents.Contains(".NET Bot Black Sweatshirt"))
+        try
         {
-            return HealthCheckResult.Healthy("The check indicates a healthy result.");
-        }
+            var client = _httpClientFactory.CreateClient();
+            var url = $"{_baseUrlConfiguration.ApiBase}catalog-items";
 
-        return HealthCheckResult.Unhealthy("The check indicates an unhealthy result.");
+            var response = await client.GetAsync(url, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return HealthCheckResult.Unhealthy(
+                    $"API returned {response.StatusCode}");
+            }
+
+            var content = await response.Content.ReabdAsStringAsync(cancellationToken);
+
+            if (content.Contains(".NET Bot Black Sweatshirt"))
+            {
+                return HealthCheckResult.Healthy(
+                    "The check indicates a healthy result.");
+            }
+
+            return HealthCheckResult.Unhealthy(
+                "The check indicates an unhealthy result.");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy(
+                "API health check failed.", ex);
+        }
     }
 }
