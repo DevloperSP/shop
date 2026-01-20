@@ -109,17 +109,6 @@ public class ManageController : Controller
 
         await SendVerificationEmailInternalAsync(user);
 
-        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-        //Guard.Against.Null(callbackUrl, nameof(callbackUrl));
-        //var email = user.Email;
-        //if (email == null)
-        //{
-        //    throw new ApplicationException($"No email associated with user {user.UserName}'.");
-        //}
-
-        //await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
-
         StatusMessage = "Verification email sent. Please check your email.";
         return RedirectToAction(nameof(MyAccount));
     }
