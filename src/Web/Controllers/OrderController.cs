@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.eShopWeb.Web.Features.MyOrders;
 using Microsoft.eShopWeb.Web.Features.OrderDetails;
+using Azure.Messaging.ServiceBus;
+using System.Text.Json;
 
 namespace Microsoft.eShopWeb.Web.Controllers;
 
@@ -13,6 +15,9 @@ namespace Microsoft.eShopWeb.Web.Controllers;
 public class OrderController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly ServiceBusClient _serviceBusClient;
+    private readonly string _queueName;
+    
 
     public OrderController(IMediator mediator)
     {

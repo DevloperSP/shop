@@ -25,6 +25,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
            .AddEntityFrameworkStores<AppIdentityDbContext>()
            .AddDefaultTokenProviders();
 
+builder.Services.AddHttpClient<OrderItemsReserverClient>();
+builder.Services.AddHttpClient<DeliveryOrderNotifier>();
+builder.Services.AddSingleton<ServiceBusClient>(sp =>
+    new ServiceBusClient(builder.Configuration["ServiceBus:ConnectionString"]));
+
 var gitHubClientId = builder.Configuration["GitHub:ClientId"] ?? string.Empty;
 
 if (!string.IsNullOrEmpty(gitHubClientId))
