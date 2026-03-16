@@ -107,16 +107,7 @@ public class ManageController : Controller
 
         var user = await GetCurrentUserAsync();
 
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-        Guard.Against.Null(callbackUrl, nameof(callbackUrl));
-        var email = user.Email;
-        if (email == null)
-        {
-            throw new ApplicationException($"No email associated with user {user.UserName}'.");
-        }
-
-        await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
+        await SendVerificationEmailInternalAsync(user);
 
         StatusMessage = "Verification email sent. Please check your email.";
         return RedirectToAction(nameof(MyAccount));
@@ -489,6 +480,21 @@ public class ManageController : Controller
     {
         var user = await _userManager.GetUserAsync(User);
         return user ?? throw new UserNotFoundException(_userManager.GetUserId(User) ?? string.Empty);
+    }
+
+    protected virtual async Task SendVerificationEmailInternalAsync(ApplicationUser user)
+    {
+        var email = user.Email;
+        if(email == null)
+        {
+            throw new ApplicationException($"No email associated with user {user.UserName}'.");
+        }
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+        Guard.Against.Null(callbackUrl, nameof(callbackUrl));
+
+        await _emailSender.SendEmailConfirmationAsync(email, callbackUrl);
     }
 
 }
