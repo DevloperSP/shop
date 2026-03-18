@@ -47,9 +47,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_WEB_SOUTH }} # Ensure these secrets exist!
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_WEB_SOUTH }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_WEB_SOUTH }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FC1D53400ACF4A3EADB01CF582B35D63 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0E7CB176BDDC4F8DA2BA5894291E1C82 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E572A6198F7244A1BF792E221A969002 }}
 
       - name: Deploy to Azure Web App (Staging Slot)
         uses: azure/webapps-deploy@v3
