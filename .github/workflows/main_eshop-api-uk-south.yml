@@ -23,11 +23,16 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: dotnet restore
+        run: dotnet restore src/PublicApi/PublicApi.csproj -f net8.0
+
       - name: Build with dotnet
-        run: dotnet build src/PublicApi/PublicApi.csproj --configuration Release -f net8.0
+        # Keep the -f net8.0 here too
+        run: dotnet build src/PublicApi/PublicApi.csproj --configuration Release -f net8.0 --no-restore
 
       - name: dotnet publish
-        run: dotnet publish src/PublicApi/PublicApi.csproj -c Release -f net8.0 -o ${{env.DOTNET_ROOT}}/myapp
+        # Keep the -f net8.0 here too
+        run: dotnet publish src/PublicApi/PublicApi.csproj -c Release -f net8.0 -o ${{env.DOTNET_ROOT}}/myapp --no-restore
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
