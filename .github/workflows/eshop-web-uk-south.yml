@@ -44,7 +44,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'eshop-web-uk-south'
-          slot-name: 'staging'
-          # Use the publish profile secret here
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .web-app
